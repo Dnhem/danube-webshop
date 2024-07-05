@@ -1,9 +1,11 @@
-import { test, expect } from '@playwright/test';
-import { defaults } from './defaults';
-import { validateStorageState } from './utils/validateStorageState';
-import { createChecklyContext } from './utils/checklyRequestContext';
+// https://checklyhq.slack.com/archives/C04PFSV5W3B/p1715678000788639
 
-const apiKey =  defaults.apiKey;
+import { test, expect } from "@playwright/test";
+import { defaults } from "./defaults";
+import { validateStorageState } from "./utils/validateStorageState";
+import { createChecklyContext } from "./utils/checklyRequestContext";
+
+const apiKey = defaults.apiKey;
 const accountID = defaults.accountID;
 // Declare variable we'll reference during our test
 let storageState;
@@ -13,20 +15,20 @@ test.beforeAll(async () => {
   storageState = await validateStorageState(apiKey, accountID);
 });
 
-test('login', async ({ page }) => {
-  const context = await createChecklyContext(apiKey, accountID)
+test("login", async ({ page }) => {
+  const context = await createChecklyContext(apiKey, accountID);
 
   test.setTimeout(defaults.testTime);
 
   await page.goto(defaults.pageUrl);
 
-  await page.getByRole('link', { name: 'login' }).click();
-  await page.waitForLoadState('networkidle');
+  await page.getByRole("link", { name: "login" }).click();
+  await page.waitForLoadState("networkidle");
   await page.locator('input[type="email"]').click();
   await page.locator('input[type="email"]').fill(defaults.testUser.email);
   await page.locator('input[type="password"]').fill(defaults.testUser.password);
 
-  await page.getByRole('button', { name: 'Login' }).click();
+  await page.getByRole("button", { name: "Login" }).click();
 
   let response = await page.waitForResponse((response) => {
     // console.log(response.url(), 'response url being hit');
@@ -60,11 +62,9 @@ test('login', async ({ page }) => {
     },
   });
 
-  let responseTimeJSON = await responseTime.json()
+  let responseTimeJSON = await responseTime.json();
   let responseStorageJSON = await responseStorage.json();
 
-  console.log(responseTimeJSON.value, 'unix response time')
-  console.log(responseStorageJSON.value, 'storage JSON');
-
-
+  console.log(responseTimeJSON.value, "unix response time");
+  console.log(responseStorageJSON.value, "storage JSON");
 });
